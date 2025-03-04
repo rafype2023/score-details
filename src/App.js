@@ -9,10 +9,15 @@ const App = () => {
     const fetchScores = async () => {
       try {
         const response = await fetch('https://nba-playoff-predictor.onrender.com/api/scores');
-        if (!response.ok) throw new Error(`Server responded with ${response.status}`);
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Server responded with ${response.status}: ${errorText}`);
+        }
         const data = await response.json();
-        setScoresData(data); // Now includes scores and standings
+        console.log('Fetched data:', data); // Debug log
+        setScoresData(data); // Should be { scores: [], standings: [] }
       } catch (err) {
+        console.error('Fetch error:', err);
         setError(`Failed to fetch scores: ${err.message}`);
       } finally {
         setLoading(false);
@@ -23,6 +28,9 @@ const App = () => {
 
   if (loading) return <div className="text-center py-8">Loading...</div>;
   if (error) return <div className="text-red-500 text-center py-8">{error}</div>;
+  if (!scoresData.scores || scoresData.scores.length === 0) {
+    return <div className="text-center py-8">No scores available yet.</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -66,7 +74,7 @@ const App = () => {
             </table>
 
             {/* Semifinals */}
-            <h3 className="text-xl font-medium text-gray-600 mb-2">Semifinals- (2 points for winner, 1 for games)</h3>
+            <h3 className="text-xl font-medium text-gray-600 mb-2">Semifinals (2 points for winner, 1 for games)</h3>
             <table className="w-full border-collapse mb-4">
               <thead>
                 <tr className="bg-gray-200">
@@ -174,13 +182,17 @@ const App = () => {
         {/* Standings Section */}
         <div className="mt-10">
           <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">Standings</h2>
-          <ol className="list-decimal pl-6 space-y-2 max-w-md mx-auto">
-            {scoresData.standings.map((entry, index) => (
-              <li key={index} className="text-gray-600 text-lg">
-                {entry.name}: {entry.points} points
-              </li>
-            ))}
-          </ol>
+          {scoresData.standings.length > 0 ? (
+            <ol className="list-decimal pl-6 space-y-2 max-w-md mx-auto">
+              {scoresData.standings.map((entry, index) => (
+                <li key={index} className="text-gray-600 text-lg">
+                  {entry.name}: {entry.points} points
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p className="text-center text-gray-600">No standings available yet.</p>
+          )}
         </div>
       </div>
     </div>
