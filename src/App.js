@@ -66,7 +66,7 @@ const App = () => {
             </table>
 
             {/* Semifinals */}
-            <h3 className="text-xl font-medium text-gray-600 mb-2">Semifinals (2 points for winner, 1 for games)</h3>
+            <h3 className="text-xl font-medium text-gray-600 mb-2">Semifinals- (2 points for winner, 1 for games)</h3>
             <table className="w-full border-collapse mb-4">
               <thead>
                 <tr className="bg-gray-200">
