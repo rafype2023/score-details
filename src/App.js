@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-const ScoreDetails = () => {
-  const [scores, setScores] = useState([]);
+const App = () => {
+  const [scoresData, setScoresData] = useState({ scores: [], standings: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -11,7 +11,7 @@ const ScoreDetails = () => {
         const response = await fetch('https://nba-playoff-predictor.onrender.com/api/scores');
         if (!response.ok) throw new Error(`Server responded with ${response.status}`);
         const data = await response.json();
-        setScores(data);
+        setScoresData(data); // Now includes scores and standings
       } catch (err) {
         setError(`Failed to fetch scores: ${err.message}`);
       } finally {
@@ -28,7 +28,7 @@ const ScoreDetails = () => {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-6xl mx-auto p-6 bg-white rounded-xl shadow-lg">
         <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">NBA Playoff Prediction Scores</h1>
-        {scores.map((entry, index) => (
+        {scoresData.scores.map((entry, index) => (
           <div key={index} className="mb-10">
             <h2 className="text-2xl font-semibold text-gray-700 mb-4">{entry.user}: {entry.score} Points</h2>
 
@@ -170,9 +170,21 @@ const ScoreDetails = () => {
             <p className="text-lg font-semibold text-gray-700">Total Expected Score: {entry.score} points</p>
           </div>
         ))}
+
+        {/* Standings Section */}
+        <div className="mt-10">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">Standings</h2>
+          <ol className="list-decimal pl-6 space-y-2 max-w-md mx-auto">
+            {scoresData.standings.map((entry, index) => (
+              <li key={index} className="text-gray-600 text-lg">
+                {entry.name}: {entry.points} points
+              </li>
+            ))}
+          </ol>
+        </div>
       </div>
     </div>
   );
 };
 
-export default ScoreDetails;
+export default App;
