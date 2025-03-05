@@ -231,7 +231,7 @@ const FinalsPredictionAnalysis = () => {
     ...['Celtics', 'Bucks', 'Pacers', 'Heat', 'Knicks', 'Cavaliers'],
     ...['Magic', 'Pistons', 'Hawks', 'Wizards'],
     ...['Nuggets', 'Suns', 'Warriors', 'Lakers', 'Clippers', 'Grizzlies'],
-    ...['Rockets', 'Pelicans', 'Spurs', 'Timberwolves']
+    ...['Rockets', 'Pelicans', 'Spurs', 'Timberwolves','Thunder']
   ];
   const mvpOptions = [
     'De Andre Hunter', 'Ty Jerome', 'Jaylen Brown', 'Jayson Tatum', 'Jalen Brunson',
