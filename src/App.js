@@ -194,6 +194,77 @@ const App = () => {
             <p className="text-center text-gray-600">No standings available yet.</p>
           )}
         </div>
+
+        {/* Finals Prediction Analysis Section */}
+        <FinalsPredictionAnalysis />
+      </div>
+    </div>
+  );
+};
+
+const FinalsPredictionAnalysis = () => {
+  const [predictionData, setPredictionData] = useState({
+    winnerDistribution: [],
+    mvpDistribution: []
+  });
+
+  useEffect(() => {
+    // Fetch prediction distribution from backend
+    fetch('https://nba-playoff-predictor.onrender.com/api/prediction-distribution')
+      .then((res) => res.json())
+      .then((data) => setPredictionData(data))
+      .catch((err) => console.error('Fetch error for prediction distribution:', err));
+  }, []);
+
+  // Map to format data for display (fill with 0 if no predictions)
+  const getCount = (items, key) => {
+    const countMap = {};
+    items.forEach((item) => (countMap[item._id] = item.count || 0));
+    return countMap;
+  };
+
+  const winnerCounts = getCount(predictionData.winnerDistribution, 'finalsWinner');
+  const mvpCounts = getCount(predictionData.mvpDistribution, 'mvp');
+
+  // Example teams and MVP options (from your App.js or similar)
+  const allTeams = [
+    ...['Celtics', 'Bucks', 'Pacers', 'Heat', 'Knicks', 'Cavaliers'],
+    ...['Magic', 'Pistons', 'Hawks', 'Wizards'],
+    ...['Nuggets', 'Suns', 'Warriors', 'Lakers', 'Clippers', 'Grizzlies'],
+    ...['Rockets', 'Pelicans', 'Spurs', 'Timberwolves']
+  ];
+  const mvpOptions = [
+    'De Andre Hunter', 'Ty Jerome', 'Jaylen Brown', 'Jayson Tatum', 'Jalen Brunson',
+    'Karl-Anthony Towns', 'Giannis Antetokounmpo', 'Damian Lillard', 'Tyrese Haliburton',
+    'Bennedict Mathurin', 'Cade Cunningham', 'Jaden Ivey', 'Jimmy Butler', 'Bam Adebayo',
+    'Paolo Banchero', 'Franz Wagner', 'Shai Gilgeous-Alexander', 'Josh Giddey',
+    'LeBron James', 'Luka Dončić', 'Nikola Jokić', 'Jamal Murray', 'Ja Morant',
+    'Jaren Jackson Jr.', 'Jalen Green', 'Jabari Smith Jr.', 'Kawhi Leonard',
+    'Paul George', 'Stephen Curry', 'Jimmy Butler'
+  ];
+
+  return (
+    <div className="mt-10">
+      <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">Finals Prediction Analysis</h2>
+      <div>
+        <h3 className="text-xl font-semibold text-gray-700 mb-2">Finals Winner Predictions</h3>
+        <ul className="list-disc pl-6 space-y-2 max-w-md mx-auto text-gray-600 text-lg">
+          {allTeams.map((team) => (
+            <li key={team} className="mt-1">
+              {team}: {winnerCounts[team] || 0} users
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="mt-6">
+        <h3 className="text-xl font-semibold text-gray-700 mb-2">Finals MVP Predictions</h3>
+        <ul className="list-disc pl-6 space-y-2 max-w-md mx-auto text-gray-600 text-lg">
+          {mvpOptions.map((player) => (
+            <li key={player} className="mt-1">
+              {player}: {mvpCounts[player] || 0} users
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
